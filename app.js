@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const router = require('./routes/index');
+const cardRouter = require('./routes/cards');
+const userRouter = require('./routes/users');
 
 const {
   PORT = 3000,
@@ -12,19 +13,19 @@ mongoose.connect(DB_URL, {
 });
 
 const app = express();
-
 app.use(express.static('public'));
 app.use(express.json());
-app.use('/users', router);
+app.use('/users', userRouter);
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '64e0c74ac4b6f430193e5ccb',
+    _id: '64e3afdb7d6604e4b21dd33b',
   };
 
   next();
 });
 
+app.use('/cards', cardRouter);
 app.listen(PORT, () => {
 
 });

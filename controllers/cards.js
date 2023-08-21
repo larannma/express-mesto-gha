@@ -1,13 +1,13 @@
 const { HTTP_STATUS_BAD_REQUEST } = require('http2').constants;
-const userModel = require('../models/user');
+const cardModel = require('../models/card');
 
-const getUsers = (req, res) => userModel.find({})
+const getCards = (req, res) => cardModel.find({})
   .then((r) => res.status(200).send(r))
   .catch(() => res.status(500).send({ message: 'Server error' }));
 
-const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  return userModel.create({ name, about, avatar })
+const createCard = (req, res) => {
+  const { name, link, owner = '64e3a54eed994c6abf058678' } = req.body;
+  return cardModel.create({ name, link, owner })
     .then((r) => res.send(r))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -17,9 +17,9 @@ const createUser = (req, res) => {
     });
 };
 
-const getUserById = (req, res) => {
-  const { userId } = req.params;
-  return userModel.findById(userId)
+const deleteCardById = (req, res) => {
+  const { cardId } = req.params;
+  return cardModel.findOneAndDelete(cardId)
     .then((r) => {
       if (r === null) {
         return res.status(404).send({ message: 'User not found' });
@@ -34,18 +34,18 @@ const getUserById = (req, res) => {
     });
 };
 
-const updateUserById = (req, res) => {
+const addLikeById = (req, res) => {
   res.status(200).send({ mesaage: 'Not implemented' });
 };
 
-const updateAvatarById = (req, res) => {
+const removeLikeById = (req, res) => {
   res.status(200).send({ mesaage: 'Not implemented' });
 };
 
 module.exports = {
-  getUsers,
-  createUser,
-  getUserById,
-  updateUserById,
-  updateAvatarById,
+  getCards,
+  createCard,
+  deleteCardById,
+  addLikeById,
+  removeLikeById,
 };
