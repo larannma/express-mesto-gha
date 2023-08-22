@@ -35,11 +35,19 @@ const deleteCardById = (req, res) => {
 };
 
 const addLikeById = (req, res) => {
-  res.status(200).send({ mesaage: 'Not implemented' });
+  cardModel.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true },
+  )
 };
 
 const removeLikeById = (req, res) => {
-  res.status(200).send({ mesaage: 'Not implemented' });
+  cardModel.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true },
+  )
 };
 
 module.exports = {

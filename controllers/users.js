@@ -35,11 +35,39 @@ const getUserById = (req, res) => {
 };
 
 const updateUserById = (req, res) => {
-  res.status(200).send({ mesaage: 'Not implemented' });
+  const { userId } = req.user._id;
+  const { name, about } = req.body;
+  return userModel.updateOne(userId, { $set: { 'name': name, 'about': about } })
+    .then((r) => {
+      if (r === null) {
+        return res.status(404).send({ message: 'User not found' });
+      }
+      return res.status(200).send(r);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid Id' });
+      }
+      return res.status(500).send({ message: 'Server error' });
+    });
 };
 
 const updateAvatarById = (req, res) => {
-  res.status(200).send({ mesaage: 'Not implemented' });
+  const { userId } = req.user._id;
+  const { avatar } = req.body;
+  return userModel.updateOne(userId, { $set: { 'avatar': avatar } })
+    .then((r) => {
+      if (r === null) {
+        return res.status(404).send({ message: 'User not found' });
+      }
+      return res.status(200).send(r);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid Id' });
+      }
+      return res.status(500).send({ message: 'Server error' });
+    });
 };
 
 module.exports = {

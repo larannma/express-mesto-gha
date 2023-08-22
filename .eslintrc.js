@@ -21,4 +21,5 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
+  "no-underscore-dangle":  ["error", { "allow": ["_place"] }]
 };

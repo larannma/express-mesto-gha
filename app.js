@@ -15,7 +15,6 @@ mongoose.connect(DB_URL, {
 const app = express();
 app.use(express.static('public'));
 app.use(express.json());
-app.use('/users', userRouter);
 
 app.use((req, res, next) => {
   req.user = {
@@ -25,7 +24,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/users', userRouter);
 app.use('/cards', cardRouter);
+
 app.listen(PORT, () => {
 
 });
