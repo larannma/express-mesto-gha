@@ -35,19 +35,45 @@ const deleteCardById = (req, res) => {
 };
 
 const addLikeById = (req, res) => {
-  cardModel.findByIdAndUpdate(
-    req.params.cardId,
+  const { cardId } = req.params;
+  return cardModel.findByIdAndUpdate(
+    cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
+    .then((r) => {
+      if (r === null) {
+        return res.status(404).send({ message: 'Card not found' });
+      }
+      return res.status(200).send(r);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid Id' });
+      }
+      return res.status(500).send({ message: 'Server error' });
+    });
 };
 
 const removeLikeById = (req, res) => {
-  cardModel.findByIdAndUpdate(
+  const { cardId } = req.params;
+  return cardModel.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
     { new: true },
   )
+    .then((r) => {
+      if (r === null) {
+        return res.status(404).send({ message: 'Card not found' });
+      }
+      return res.status(200).send(r);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid Id' });
+      }
+      return res.status(500).send({ message: 'Server error' });
+    });
 };
 
 module.exports = {

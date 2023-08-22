@@ -42,7 +42,7 @@ const updateUserById = (req, res) => {
       if (r === null) {
         return res.status(404).send({ message: 'User not found' });
       }
-      return res.status(200).send(r);
+      return res.status(200).send(req.body);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -60,7 +60,7 @@ const updateAvatarById = (req, res) => {
       if (r === null) {
         return res.status(404).send({ message: 'User not found' });
       }
-      return res.status(200).send(r);
+      return res.status(200).send(req.body);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
