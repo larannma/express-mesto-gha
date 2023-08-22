@@ -27,6 +27,10 @@ app.use((req, res, next) => {
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
 
+app.use((req, res, next) => {
+  return res.status(404).send({ message: 'Page does not exist' });
+})
+
 app.listen(PORT, () => {
 
 });
