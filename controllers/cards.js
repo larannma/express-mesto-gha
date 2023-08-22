@@ -29,7 +29,7 @@ const deleteCardById = (req, res) => {
     .catch((err) => {
       console.log(err.name)
       if (err.name === 'CastError') {
-        return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid Id' });
+        return res.status(400).send({ message: 'Invalid Id' });
       }
       return res.status(500).send({ message: 'Server error' });
     });
