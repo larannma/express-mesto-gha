@@ -9,7 +9,7 @@ const getCards = (req, res) => cardModel.find({})
 const createCard = (req, res) => {
   const { name, link, owner = '64e3a54eed994c6abf058678' } = req.body;
   return cardModel.create({ name, link, owner })
-    .then((r) => res.send(r))
+    .then((r) => res.status(201).send(r))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid data' });

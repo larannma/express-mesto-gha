@@ -8,7 +8,7 @@ const getUsers = (req, res) => userModel.find({})
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   return userModel.create({ name, about, avatar })
-    .then((r) => res.send(r))
+    .then((r) => res.status(201).send(r))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid data' });
