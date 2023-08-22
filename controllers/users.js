@@ -46,6 +46,8 @@ const updateUserById = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid Id' });
+      } else if (err.name === 'ValidationError'){
+        return res.status(400).send({ message: 'Invalid data' });
       }
       return res.status(500).send({ message: 'Server error' });
     });
@@ -64,6 +66,8 @@ const updateAvatarById = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid Id' });
+      } else if (err.name === 'ValidationError'){
+        return res.status(400).send({ message: 'Invalid data' });
       }
       return res.status(500).send({ message: 'Server error' });
     });
