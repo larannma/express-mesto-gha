@@ -1,5 +1,6 @@
 const { HTTP_STATUS_BAD_REQUEST } = require('http2').constants;
 const cardModel = require('../models/card');
+const mongoose = require('mongoose');
 
 const getCards = (req, res) => cardModel.find({})
   .then((r) => res.status(200).send(r))
@@ -18,19 +19,21 @@ const createCard = (req, res) => {
 };
 
 const deleteCardById = (req, res) => {
-  const { cardId } = req.params;
-  return cardModel.findOneAndDelete(cardId)
+  const cardId = req.params.cardId;
+
+  if (!mongoose.Types.ObjectId.isValid(cardId)) {
+    return res.status(400).send({ message: 'Invalid Id' });
+  }
+
+  return cardModel.findByIdAndDelete(cardId)
     .then((r) => {
-      if (r === null) {
+      if (!r) {
         return res.status(404).send({ message: 'Card not found' });
       }
       return res.status(200).send(r);
     })
     .catch((err) => {
       console.log(err.name)
-      if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Invalid Id' });
-      }
       return res.status(500).send({ message: 'Server error' });
     });
 };
