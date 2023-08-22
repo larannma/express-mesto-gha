@@ -35,9 +35,8 @@ const getUserById = (req, res) => {
 };
 
 const updateUserById = (req, res) => {
-  const { userId } = req.user._id;
   const { name, about } = req.body;
-  return userModel.updateOne(userId, { $set: { 'name': name, 'about': about } })
+  return userModel.findByIdAndUpdate(req.user._id, { 'name': name, 'about': about }, { new: true, runValidators: true })
     .then((r) => {
       if (r === null) {
         return res.status(404).send({ message: 'User not found' });
@@ -53,9 +52,9 @@ const updateUserById = (req, res) => {
 };
 
 const updateAvatarById = (req, res) => {
-  const { userId } = req.user._id;
+  const userId = req.user._id;
   const { avatar } = req.body;
-  return userModel.updateOne(userId, { $set: { 'avatar': avatar } })
+  return userModel.findByIdAndUpdate(userId, { 'avatar': avatar }, {new: true, runValidators: true})
     .then((r) => {
       if (r === null) {
         return res.status(404).send({ message: 'User not found' });

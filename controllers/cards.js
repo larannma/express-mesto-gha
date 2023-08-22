@@ -56,7 +56,6 @@ const addLikeById = (req, res) => {
 };
 
 const removeLikeById = (req, res) => {
-  const { cardId } = req.params;
   return cardModel.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
