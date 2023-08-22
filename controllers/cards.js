@@ -22,7 +22,7 @@ const deleteCardById = (req, res) => {
   return cardModel.findOneAndDelete(cardId)
     .then((r) => {
       if (r === null) {
-        return res.status(400).send({ message: 'Card not found' });
+        return res.status(404).send({ message: 'Card not found' });
       }
       return res.status(200).send(r);
     })
