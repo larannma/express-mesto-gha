@@ -9,8 +9,6 @@ const {
 
 router.get('/:userId', getUserById);
 router.get('/', getUsers);
-router.post('/', createUser);
-
 router.patch('/me', updateUserById);
 router.patch('/me/avatar', updateAvatarById);
 

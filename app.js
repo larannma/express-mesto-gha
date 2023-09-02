@@ -4,6 +4,11 @@ const cardRouter = require('./routes/cards');
 const userRouter = require('./routes/users');
 
 const {
+  createUser,
+  login
+} = require('./controllers/users');
+
+const {
   PORT = 3000,
   DB_URL = 'mongodb://localhost:27017/mestodb',
 } = process.env;
@@ -23,6 +28,9 @@ app.use((req, res, next) => {
 
   next();
 });
+
+app.post('/signin', login);
+app.post('/signup', createUser);
 
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
