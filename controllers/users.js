@@ -107,7 +107,7 @@ const login = (req, res) => {
       .status(403)
       .send({message: "Email или пароль не могут быть пустыми"})
   }
-  return userModel.findOne({ email }).then((user) => {
+  return userModel.findOne({ email }).select('+password').then((user) => {
     if (!user) {
       return res
       .status(403)

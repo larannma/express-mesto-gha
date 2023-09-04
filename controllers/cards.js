@@ -7,7 +7,7 @@ const getCards = (req, res) => cardModel.find({})
   .catch(() => res.status(500).send({ message: 'Server error' }));
 
 const createCard = (req, res) => {
-  const { name, link, owner = '64e3a54eed994c6abf058678' } = req.body;
+  const { name, link, owner = req.user._id } = req.body;
   return cardModel.create({ name, link, owner })
     .then((r) => res.status(201).send(r))
     .catch((err) => {
@@ -29,6 +29,9 @@ const deleteCardById = (req, res) => {
     .then((r) => {
       if (!r) {
         return res.status(404).send({ message: 'Card not found' });
+      }
+      if (r.owner.toString() !== req.user._id) {
+        return res.status(401).send({ message: "You cannot deleate someone else's card" });
       }
       return res.status(200).send(r);
     })
