@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cardRouter = require('./routes/cards');
 const userRouter = require('./routes/users');
+const { auth } = require('./middlewares/auth');
+const cookieParser = require('cookie-parser');
 
 const {
   createUser,
@@ -18,19 +20,14 @@ mongoose.connect(DB_URL, {
 });
 
 const app = express();
+app.use(cookieParser());
 app.use(express.static('public'));
 app.use(express.json());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '64e47928c9db88faf1af3717',
-  };
-
-  next();
-});
-
 app.post('/signin', login);
 app.post('/signup', createUser);
+
+app.use(auth);
 
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);

@@ -124,7 +124,7 @@ const login = (req, res) => {
         _id: user._id
       }, JWT_SECRET, { expiresIn: '1w' });
 
-      res.cookie('jwt', token, {
+      res.cookie('token', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true
       });
@@ -142,5 +142,5 @@ module.exports = {
   getUserById,
   updateUserById,
   updateAvatarById,
-  login
+  login,
 };
