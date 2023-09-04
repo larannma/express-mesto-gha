@@ -31,7 +31,7 @@ const deleteCardById = (req, res) => {
         return res.status(404).send({ message: 'Card not found' });
       }
       if (r.owner.toString() !== req.user._id) {
-        return res.status(401).send({ message: "You cannot deleate someone else's card" });
+        return res.status(403).send({ message: "You cannot deleate someone else's card" });
       }
       return res.status(200).send(r);
     })

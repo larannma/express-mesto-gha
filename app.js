@@ -24,10 +24,19 @@ app.use(cookieParser());
 app.use(express.static('public'));
 app.use(express.json());
 
+
 app.post('/signin', login);
 app.post('/signup', createUser);
 
 app.use(auth);
+
+app.use((req, res, next) => {
+  req.user = {
+    _id: req.user._id
+  };
+
+  next();
+});
 
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
