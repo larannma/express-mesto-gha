@@ -34,9 +34,7 @@ const createUser = (req, res) => {
       }
       return userModel.create({ name, about, avatar, email, password: hash })
       .then((r) => {
-        const { name, about, avatar, email, _id, __v } = r._doc;
-        const response = { name, about, avatar, email, _id, __v };
-        res.status(201).send(response);
+        res.status(201).send(r);
       })
       .catch((err) => {
         if (err.name === 'ValidationError') {
