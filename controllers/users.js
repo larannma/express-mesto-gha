@@ -33,7 +33,9 @@ const createUser = (req, res) => {
           .send({message: "Пользователь с таким email уже существует"})
       }
       return userModel.create({ name, about, avatar, email, password: hash })
-      .then((r) => res.status(201).send({message: `Пользователь ${email} зарегестрирован`}))
+      .then((r) => {
+        res.status(201).send({message: `Пользователь ${email} зарегестрирован`})
+      })
       .catch((err) => {
         if (err.name === 'ValidationError') {
           return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid data' });
