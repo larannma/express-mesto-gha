@@ -32,9 +32,25 @@ const createUser = (req, res) => {
           .status(409)
           .send({message: "Пользователь с таким email уже существует"})
       }
-      return userModel.create({ name, about, avatar, email, password: hash })
+
+      const userData = { email, password: hash };
+
+      if (name) {
+        userData.name = name;
+      }
+
+      if (about) {
+        userData.about = about;
+      }
+
+      if (avatar) {
+        userData.avatar = avatar;
+      }
+
+      return userModel.create(userData)
       .then((r) => {
-        res.status(201).send(r);
+        const { password, ...userWithoutPassword } = r.toObject();
+        res.status(201).send(userWithoutPassword);
       })
       .catch((err) => {
         if (err.name === 'ValidationError') {
