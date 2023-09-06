@@ -154,6 +154,24 @@ const login = (req, res) => {
   })
 }
 
+const getCurrentUser = (req, res) => {
+  const userId = req.user._id;
+  console.log(userId)
+  return userModel.findById(userId)
+    .then((r) => {
+      if (r === null) {
+        return res.status(404).send({ message: 'User not found' });
+      }
+      return res.status(200).send(r);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid Id' });
+      }
+      return res.status(500).send({ message: 'Server error' });
+    });
+}
+
 module.exports = {
   getUsers,
   createUser,
@@ -161,4 +179,5 @@ module.exports = {
   updateUserById,
   updateAvatarById,
   login,
+  getCurrentUser,
 };

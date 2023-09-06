@@ -9,6 +9,10 @@ const urlPattern = new RegExp(
   "^((http|https):\\/\\/)?(www\\.)?[a-zA-Z0-9-]+(\\.[a-zA-Z]{2,6})+[a-zA-Z0-9-._~:\\/?#\\[\\]@!$&'()*+,;=]*$"
 );
 
+const emailPattern = new RegExp(
+  "^[^\s@]+@[^\s@]+\.[^\s@]+$"
+);
+
 const {
   createUser,
   login
@@ -29,7 +33,13 @@ app.use(express.static('public'));
 app.use(express.json());
 
 
-app.post('/signin', login);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().regex(emailPattern).email(),
+    password: Joi.string().required().min(8),
+  }),
+}),login);
+
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -46,7 +56,6 @@ app.use((req, res, next) => {
   req.user = {
     _id: req.user._id
   };
-
   next();
 });
 
