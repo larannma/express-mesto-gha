@@ -12,7 +12,12 @@ const urlPattern = new RegExp(
   "^((http|https):\\/\\/)?(www\\.)?[a-zA-Z0-9-]+(\\.[a-zA-Z]{2,6})+[a-zA-Z0-9-._~:\\/?#\\[\\]@!$&'()*+,;=]*$"
 );
 
-router.delete('/:cardId', deleteCardById);
+router.delete('/:cardId', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24).required()
+  }),
+}),deleteCardById);
+
 router.get('/', getCards);
 router.post('/', celebrate({
   body: Joi.object().keys({
