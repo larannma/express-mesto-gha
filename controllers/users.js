@@ -34,7 +34,9 @@ const createUser = (req, res) => {
       }
       return userModel.create({ name, about, avatar, email, password: hash })
       .then((r) => {
-        res.status(201).send(r)
+        const { name, about, avatar, email, _id, __v } = r._doc;
+        const response = { name, about, avatar, email, _id, __v };
+        res.status(201).send(response);
       })
       .catch((err) => {
         if (err.name === 'ValidationError') {
@@ -106,13 +108,13 @@ const login = (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res
-      .status(403)
+      .status(400)
       .send({message: "Email или пароль не могут быть пустыми"})
   }
   return userModel.findOne({ email }).select('+password').then((user) => {
     if (!user) {
       return res
-      .status(403)
+      .status(401)
       .send({message: "Такого пользователя не существует"})
     }
     bcrypt.compare(password, user.password, function(err, isValid) {
