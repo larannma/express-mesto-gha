@@ -29,12 +29,12 @@ const createUser = (req, res) => {
     return userModel.findOne( { email } ).then((user) => {
       if (user) {
         return res
-          .status(403)
+          .status(409)
           .send({message: "Пользователь с таким email уже существует"})
       }
       return userModel.create({ name, about, avatar, email, password: hash })
       .then((r) => {
-        res.status(201).send({message: `Пользователь ${email} зарегестрирован`})
+        res.status(201).send(r)
       })
       .catch((err) => {
         if (err.name === 'ValidationError') {
