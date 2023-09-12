@@ -146,7 +146,7 @@ const getCurrentUser = (req, res) => {
       return res.status(200).send(r);
     })
     .catch((err) => {
-      return res.status(500).send({ message: 'Server error' });
+      return res.status(409).send({ message: 'Server error' });
     });
 }
 
