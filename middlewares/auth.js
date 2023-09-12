@@ -1,13 +1,11 @@
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = 'supersecretstring';
+const { NotAuthorizedError } = require('../errors/errors');
 
 const auth = (req, res, next) => {
   const { token = null } = req.cookies
   if (!token) {
-
-    return res
-      .status(401)
-      .send({ message: 'Необходима авторизация' });
+    next(new NotAuthorizedError('Необходима авторизация'));
   }
 
   let payload;

@@ -1,6 +1,5 @@
 module.exports = {
   env: {
-    browser: true,
     es2021: true,
   },
   extends: 'airbnb-base',
@@ -21,5 +20,5 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  "no-underscore-dangle":  ["error", { "allow": ["_place"] }]
+  "no-underscore-dangle":  ["error", { "allow": ["_place", "_id"] }]
 };

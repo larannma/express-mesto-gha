@@ -8,31 +8,14 @@ const SALT_ROUNDS = 10;
 const JWT_SECRET = 'supersecretstring';
 
 const getUsers = (req, res) => userModel.find({})
-  .then((r) => res.status(200).send(r))
+  .then((result) => res.status(200).send(result))
   .catch(() => res.status(500).send({ message: 'Server error' }));
 
 const createUser = (req, res) => {
   const { name, about, avatar, email, password} = req.body;
-  if (!validator.isEmail(email)) {
-    return res
-      .status(403)
-      .send({message: "Email введен неверно"})
-  }
-
-  if (!validator.isLength(password, { min: 8 })) {
-    return res
-      .status(403)
-      .send({message: "Пароль должен содержать не менее 8 символов"})
-  }
 
   bcrypt.hash(password, SALT_ROUNDS, function(err, hash) {
     return userModel.findOne( { email } ).then((user) => {
-      if (user) {
-        return res
-          .status(409)
-          .send({message: "Пользователь с таким email уже существует"})
-      }
-
       const userData = { email, password: hash };
 
       if (name) {
@@ -109,9 +92,7 @@ const updateAvatarById = (req, res) => {
       return res.status(200).send(req.body);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid Id' });
-      } else if (err.name === 'ValidationError'){
+      if (err.name === 'ValidationError'){
         return res.status(400).send({ message: 'Invalid data' });
       }
       return res.status(500).send({ message: 'Server error' });
@@ -165,9 +146,6 @@ const getCurrentUser = (req, res) => {
       return res.status(200).send(r);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid Id' });
-      }
       return res.status(500).send({ message: 'Server error' });
     });
 }

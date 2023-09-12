@@ -5,6 +5,7 @@ const userRouter = require('./routes/users');
 const { auth } = require('./middlewares/auth');
 const cookieParser = require('cookie-parser');
 const { celebrate, Joi, errors } = require('celebrate');
+const { NotFoundError } = require('./errors/errors');
 const urlPattern = new RegExp(
   "^((http|https):\\/\\/)?(www\\.)?[a-zA-Z0-9-]+(\\.[a-zA-Z]{2,6})+[a-zA-Z0-9-._~:\\/?#\\[\\]@!$&'()*+,;=]*$"
 );
@@ -52,21 +53,26 @@ app.post('/signup', celebrate({
 
 app.use(auth);
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: req.user._id
-  };
-  next();
-});
-
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
 
 app.use(errors());
 
 app.use((req, res, next) => {
-  return res.status(404).send({ message: 'Page does not exist' });
+  next(new NotFoundError('Страница не найдена'));
 })
+
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+
+  res
+    .status(statusCode)
+    .send({
+      message: statusCode === 500
+        ? 'На сервере произошла ошибка'
+        : message
+    });
+});
 
 app.listen(PORT, () => {
 
