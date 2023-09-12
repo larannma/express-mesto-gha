@@ -39,7 +39,7 @@ const createUser = (req, res) => {
         if (err.name === 'ValidationError') {
           return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid data' });
         }
-        return res.status(500).send({ message: 'Server error' });
+        return res.status(409).send({ message: 'Пользователь уже существует' });
       });
     })
   });
