@@ -15,10 +15,10 @@ const getUsers = (req, res, next) => userModel.find({})
   .catch(err => next(err));
 
 const createUser = (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password, name, about, avatar } = req.body;
 
   bcrypt.hash(password, SALT_ROUNDS, function(err, hash) {
-    const userData = { email, password: hash };
+    const userData = { email, password: hash, name, about, avatar };
 
     return userModel.create(userData)
       .then((r) => {
@@ -107,7 +107,7 @@ const getCurrentUser = (req, res, next) => {
       if (result === null) {
         throw new NotFoundError('Пользователь не найден');
       }
-      return res.status(200).send(r);
+      return res.status(200).send(result);
     })
     .catch(err => next(err));
 }

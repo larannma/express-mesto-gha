@@ -12,6 +12,13 @@ class NotAuthorizedError extends Error {
   }
 }
 
+class ForbiddenError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 403;
+  }
+}
+
 class BadRequestError extends Error {
   constructor(message) {
     super(message);
@@ -30,5 +37,6 @@ module.exports = {
   NotFoundError,
   NotAuthorizedError,
   BadRequestError,
-  ConflictError
+  ConflictError,
+  ForbiddenError
 };

@@ -2,9 +2,10 @@ const { HTTP_STATUS_BAD_REQUEST } = require('http2').constants;
 const cardModel = require('../models/card');
 const mongoose = require('mongoose');
 
-const { 
+const {
   NotFoundError,
-  NotAuthorizedError } = require('../errors/errors');
+  NotAuthorizedError,
+  ForbiddenError } = require('../errors/errors');
 
 const getCards = (req, res) => cardModel.find({})
   .then((r) => res.status(200).send(r))
@@ -29,7 +30,7 @@ const deleteCardById = async (req, res, next) => {
     }
 
     if (card.owner.toString() !== req.user._id) {
-      next(new NotAuthorizedError("Вы не можете удалять чужую карточку"));
+      next(new ForbiddenError("Вы не можете удалять чужую карточку"));
       return
     }
 
