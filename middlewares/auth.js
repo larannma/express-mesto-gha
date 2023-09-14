@@ -6,15 +6,15 @@ const auth = (req, res, next) => {
   const { token = null } = req.cookies
   if (!token) {
     next(new NotAuthorizedError('Необходима авторизация'));
+    return;
   }
 
   let payload;
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    return res
-      .status(401)
-      .send({ message: 'Необходима авторизация' });
+    next(new NotAuthorizedError('Необходима авторизация'));
+    return;
   }
   req.user = payload;
   next();

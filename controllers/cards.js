@@ -2,46 +2,46 @@ const { HTTP_STATUS_BAD_REQUEST } = require('http2').constants;
 const cardModel = require('../models/card');
 const mongoose = require('mongoose');
 
+const { 
+  NotFoundError,
+  NotAuthorizedError } = require('../errors/errors');
+
 const getCards = (req, res) => cardModel.find({})
   .then((r) => res.status(200).send(r))
-  .catch(() => res.status(500).send({ message: 'Server error' }));
+  .catch(err => next(err));
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link, owner = req.user._id } = req.body;
   return cardModel.create({ name, link, owner })
     .then((r) => res.status(201).send(r))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid data' });
-      }
-      return res.status(500).send({ message: 'Server error' });
-    });
+    .catch(err => next(err));
 };
 
-const deleteCardById = (req, res) => {
-  const cardId = req.params.cardId;
+const deleteCardById = async (req, res, next) => {
+  try {
+    const cardId = req.params.cardId;
 
-  if (!mongoose.Types.ObjectId.isValid(cardId)) {
-    return res.status(400).send({ message: 'Invalid Id' });
+    const card = await cardModel.findById(cardId);
+
+    if (!card) {
+      next(new NotFoundError("Карточка пользователя не найдена"));
+      return
+    }
+
+    if (card.owner.toString() !== req.user._id) {
+      next(new NotAuthorizedError("Вы не можете удалять чужую карточку"));
+      return
+    }
+
+    await cardModel.findByIdAndDelete(cardId);
+    return res.status(200).send(card);
+
+  } catch {
+    next(new Error("Ошибка при удалении карточки пользователя"));
   }
-
-  return cardModel.findByIdAndDelete(cardId)
-    .then((r) => {
-      if (!r) {
-        return res.status(404).send({ message: 'Card not found' });
-      }
-      if (r.owner.toString() !== req.user._id) {
-        return res.status(403).send({ message: "You cannot deleate someone else's card" });
-      }
-      return res.status(200).send(r);
-    })
-    .catch((err) => {
-      console.log(err.name)
-      return res.status(500).send({ message: 'Server error' });
-    });
 };
 
-const addLikeById = (req, res) => {
+const addLikeById = (req, res, next) => {
   const { cardId } = req.params;
   return cardModel.findByIdAndUpdate(
     cardId,
@@ -50,19 +50,14 @@ const addLikeById = (req, res) => {
   )
     .then((r) => {
       if (r === null) {
-        return res.status(404).send({ message: 'Card not found' });
+        throw new NotFoundError("Карточка не найдена")
       }
       return res.status(200).send(r);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid Id' });
-      }
-      return res.status(500).send({ message: 'Server error' });
-    });
+    .catch(err => next(err));
 };
 
-const removeLikeById = (req, res) => {
+const removeLikeById = (req, res, next) => {
   return cardModel.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
@@ -70,16 +65,11 @@ const removeLikeById = (req, res) => {
   )
     .then((r) => {
       if (r === null) {
-        return res.status(404).send({ message: 'Card not found' });
+        throw new NotFoundError("Карточка не найдена")
       }
       return res.status(200).send(r);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid Id' });
-      }
-      return res.status(500).send({ message: 'Server error' });
-    });
+    .catch(err => next(err));
 };
 
 module.exports = {

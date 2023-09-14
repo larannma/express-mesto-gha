@@ -14,7 +14,7 @@ const urlPattern = new RegExp(
 
 router.delete('/:cardId', celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24).required()
+    cardId: Joi.string().hex().length(24).required()
   }),
 }),deleteCardById);
 
@@ -28,13 +28,13 @@ router.post('/', celebrate({
 
 router.put('/:cardId/likes', celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24).required()
+    cardId: Joi.string().hex().length(24).required()
   }),
 }),addLikeById);
 
 router.delete('/:cardId/likes', celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24).required()
+    cardId: Joi.string().hex().length(24).required()
   }),
 }),removeLikeById);
 
